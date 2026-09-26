@@ -1,0 +1,66 @@
+x-agent: &agent
+  build: .
+  image: mci-a2a-order-network
+  env_file:
+    - path: .env
+      required: false
+  environment: &agent-env
+    REGISTRY_URL: http://registry:8000
+    LITELLM_API: ${LITELLM_API:-http://host.docker.internal:11434/v1}
+    LITELLM_KEY: ${LITELLM_KEY:-}
+    LITELLM_DEFAULT_MODEL: ${LITELLM_DEFAULT_MODEL:-gpt-4o-mini}
+  depends_on:
+    registry:
+      condition: service_healthy
+  restart: unless-stopped
+
+services:
+  registry:
+    build: .
+    image: mci-a2a-order-network
+    command: ["registry"]
+    env_file:
+      - path: .env
+        required: false
+    ports: ["8000:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 3s
+      retries: 10
+
+  orchestrator:
+    <<: *agent
+    command: ["orchestrator"]
+    environment:
+      <<: *agent-env
+      AGENT_PUBLIC_URL: http://orchestrator:8100
+
+  order-intake:
+    <<: *agent
+    command: ["order-intake"]
+    environment:
+      <<: *agent-env
+      AGENT_PUBLIC_URL: http://order-intake:8101
+
+  inventory:
+    <<: *agent
+    command: ["inventory"]
+    environment:
+      <<: *agent-env
+      AGENT_PUBLIC_URL: http://inventory:8102
+
+  production:
+    <<: *agent
+    command: ["production"]
+    environment:
+      <<: *agent-env
+      AGENT_PUBLIC_URL: http://production:8103
+
+  client:
+    <<: *agent
+    entrypoint: ["python", "client.py"]
+    command: []
+    restart: "no"
+    profiles: ["client"]
+    environment:
+      <<: *agent-env

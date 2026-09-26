@@ -1,0 +1,50 @@
+Registry http://localhost:8000 lists 4 agent(s):
+  - inventory-agent                  http://localhost:8102        skills: stock-check
+  - order-fulfilment-coordinator     http://localhost:8100        skills: order-fulfilment
+  - order-intake-agent               http://localhost:8101        skills: order-extraction
+  - production-planning-agent        http://localhost:8103        skills: production-scheduling
+
+🔎 Looking up an agent with skill 'order-fulfilment'...
+→ order-fulfilment-coordinator at http://localhost:8100
+
+👤 Request:
+Hello, this is Anna Berger from Alpine Robotics GmbH. We would like to order 50 hydraulic pump housings (material 149449), twelve flange couplings 252654 and 100 pieces of 255565. Our purchase order reference is 9938812 and our customer number is 90417. We need the complete delivery by 2026-10-30. Thanks!
+
+   [   0.0s] task state: submitted
+   [   0.5s] task state: working
+   [   9.1s] task state: completed
+
+--- Result from order-fulfilment-coordinator (task 83e16f54-8c60-4563-9591-35ee74f9100e) ---
+Order Confirmation
+
+Dear Anna Berger,
+
+Thank you for your order (reference: 9938812) from Alpine Robotics GmbH (Customer No: 90417). Below are the details of your order fulfilment:
+
+* **Hydraulic pump housing (Material 149449):**
+  - Ordered quantity: 50
+  - Shipped from stock (warehouse Innsbruck): 30
+  - Quantity produced: 20 (Production finish date: 2026-10-07)
+
+* **Flange coupling DN65 (Material 252654):**
+  - Ordered quantity: 12
+  - Shipped from stock (warehouse Innsbruck): 0
+  - Quantity produced: 12 (Production finish date: 2026-10-01)
+
+* **Gearbox output shaft 40 mm (Material 255565):**
+  - Ordered quantity: 100
+  - Shipped from stock (warehouse Linz): 100
+  - Quantity produced: 0 (No production needed)
+
+**Numbers that were ignored and why:**
+- **9938812**: Ignored because it starts with 9 (customer order reference, not a material number).
+- **90417**: Ignored because it starts with 9 (customer number, not a material number).
+
+**Delivery details:**
+- **Expected complete delivery date:** 2026-10-07 (latest production finish date).
+- **Requested delivery date status:** Your requested complete delivery date of **2026-10-30** can be **met**.
+
+Best regards,
+Your Sales Team
+
+Client log written to logs/client_20260926_234139.log

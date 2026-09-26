@@ -1,0 +1,78 @@
+[registry    ] 2026-09-26 23:41:38,835 [INFO] registry: Registered agent 'order-fulfilment-coordinator' at http://localhost:8100 with skills ['order-fulfilment']
+[orchestrator] 2026-09-26 23:41:38,836 [INFO] runtime: 'order-fulfilment-coordinator' registered at http://localhost:8000 (local) as http://localhost:8100
+[registry    ] 2026-09-26 23:41:38,842 [INFO] registry: Registered agent 'inventory-agent' at http://localhost:8102 with skills ['stock-check']
+[inventory   ] 2026-09-26 23:41:38,843 [INFO] runtime: 'inventory-agent' registered at http://localhost:8000 (local) as http://localhost:8102
+[registry    ] 2026-09-26 23:41:38,859 [INFO] registry: Registered agent 'order-intake-agent' at http://localhost:8101 with skills ['order-extraction']
+[order-intake] 2026-09-26 23:41:38,860 [INFO] runtime: 'order-intake-agent' registered at http://localhost:8000 (local) as http://localhost:8101
+[registry    ] 2026-09-26 23:41:38,902 [INFO] registry: Registered agent 'production-planning-agent' at http://localhost:8103 with skills ['production-scheduling']
+[production  ] 2026-09-26 23:41:38,903 [INFO] runtime: 'production-planning-agent' registered at http://localhost:8000 (local) as http://localhost:8103
+[client      ] Registry http://localhost:8000 lists 4 agent(s):
+[client      ]   - inventory-agent                  http://localhost:8102        skills: stock-check
+[client      ]   - order-fulfilment-coordinator     http://localhost:8100        skills: order-fulfilment
+[client      ]   - order-intake-agent               http://localhost:8101        skills: order-extraction
+[client      ]   - production-planning-agent        http://localhost:8103        skills: production-scheduling
+[client      ] 
+[client      ] 🔎 Looking up an agent with skill 'order-fulfilment'...
+[client      ] → order-fulfilment-coordinator at http://localhost:8100
+[client      ] 
+[client      ] 👤 Request:
+[client      ] Hello, this is Anna Berger from Alpine Robotics GmbH. We would like to order 50 hydraulic pump housings (material 149449), twelve flange couplings 252654 and 100 pieces of 255565. Our purchase order reference is 9938812 and our customer number is 90417. We need the complete delivery by 2026-10-30. Thanks!
+[client      ] 
+[client      ]    [   0.0s] task state: submitted
+[client      ]    [   0.5s] task state: working
+[orchestrator] 2026-09-26 23:41:40,014 [INFO] httpx2: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+[orchestrator] 2026-09-26 23:41:40,763 [INFO] httpx2: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+[orchestrator] 2026-09-26 23:41:40,780 [INFO] a2a: order-intake-agent task 35f3cff8 -> submitted
+[orchestrator] 2026-09-26 23:41:41,284 [INFO] a2a: order-intake-agent task 35f3cff8 -> working
+[order-intake] 2026-09-26 23:41:42,122 [INFO] httpx2: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+[order-intake] 2026-09-26 23:41:42,855 [INFO] httpx2: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+[orchestrator] 2026-09-26 23:41:43,303 [INFO] a2a: order-intake-agent task 35f3cff8 -> completed
+[orchestrator] 2026-09-26 23:41:43,304 [INFO] orchestrator: Delegated 'order-extraction' to order-intake-agent (task 35f3cff8): Hello, this is Anna Berger from Alpine Robotics GmbH. We would like to order 50 hydraulic pump housings (material 149449), twelve flange couplings 252654 and 100 pieces of 255565. Our purchase order r
+[orchestrator] 2026-09-26 23:41:43,984 [INFO] httpx2: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+[orchestrator] 2026-09-26 23:41:44,014 [INFO] a2a: inventory-agent task a68c5d6f -> submitted
+[orchestrator] 2026-09-26 23:41:44,517 [INFO] a2a: inventory-agent task a68c5d6f -> working
+[inventory   ] 2026-09-26 23:41:44,773 [INFO] httpx2: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+[inventory   ] 2026-09-26 23:41:44,802 [INFO] a2a: production-planning-agent task 209e1605 -> submitted
+[inventory   ] 2026-09-26 23:41:45,304 [INFO] a2a: production-planning-agent task 209e1605 -> working
+[production  ] 2026-09-26 23:41:45,563 [INFO] httpx2: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+[inventory   ] 2026-09-26 23:41:45,812 [INFO] a2a: production-planning-agent task 209e1605 -> completed
+[inventory   ] 2026-09-26 23:41:45,813 [INFO] inventory: Production plan received from production-planning-agent (task 209e1605)
+[orchestrator] 2026-09-26 23:41:46,034 [INFO] a2a: inventory-agent task a68c5d6f -> completed
+[orchestrator] 2026-09-26 23:41:46,035 [INFO] orchestrator: Delegated 'stock-check' to inventory-agent (task a68c5d6f): [{"material_number": "149449", "quantity": 50}, {"material_number": "252654", "quantity": 12}, {"material_number": "255565", "quantity": 100}]
+[orchestrator] 2026-09-26 23:41:46,781 [INFO] httpx2: HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse "HTTP/1.1 200 OK"
+[client      ]    [   9.1s] task state: completed
+[client      ] 
+[client      ] --- Result from order-fulfilment-coordinator (task 83e16f54-8c60-4563-9591-35ee74f9100e) ---
+[client      ] Order Confirmation
+[client      ] 
+[client      ] Dear Anna Berger,
+[client      ] 
+[client      ] Thank you for your order (reference: 9938812) from Alpine Robotics GmbH (Customer No: 90417). Below are the details of your order fulfilment:
+[client      ] 
+[client      ] * **Hydraulic pump housing (Material 149449):**
+[client      ]   - Ordered quantity: 50
+[client      ]   - Shipped from stock (warehouse Innsbruck): 30
+[client      ]   - Quantity produced: 20 (Production finish date: 2026-10-07)
+[client      ] 
+[client      ] * **Flange coupling DN65 (Material 252654):**
+[client      ]   - Ordered quantity: 12
+[client      ]   - Shipped from stock (warehouse Innsbruck): 0
+[client      ]   - Quantity produced: 12 (Production finish date: 2026-10-01)
+[client      ] 
+[client      ] * **Gearbox output shaft 40 mm (Material 255565):**
+[client      ]   - Ordered quantity: 100
+[client      ]   - Shipped from stock (warehouse Linz): 100
+[client      ]   - Quantity produced: 0 (No production needed)
+[client      ] 
+[client      ] **Numbers that were ignored and why:**
+[client      ] - **9938812**: Ignored because it starts with 9 (customer order reference, not a material number).
+[client      ] - **90417**: Ignored because it starts with 9 (customer number, not a material number).
+[client      ] 
+[client      ] **Delivery details:**
+[client      ] - **Expected complete delivery date:** 2026-10-07 (latest production finish date).
+[client      ] - **Requested delivery date status:** Your requested complete delivery date of **2026-10-30** can be **met**.
+[client      ] 
+[client      ] Best regards,
+[client      ] Your Sales Team
+[client      ] 
+[client      ] Client log written to logs/client_20260926_234139.log

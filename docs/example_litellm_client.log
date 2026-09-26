@@ -1,0 +1,53 @@
+Registry http://localhost:4000 lists 4 agent(s):
+  - inventory-agent                  http://localhost:4000/v1/a2a/5ad3f757-6d59-43f4-a01f-70059edeaf6e/message/send skills: stock-check
+  - order-fulfilment-coordinator     http://localhost:4000/v1/a2a/bf9d0c9f-8998-4f7d-9b3a-116360f6bd5b/message/send skills: order-fulfilment
+  - order-intake-agent               http://localhost:4000/v1/a2a/d6ce5b6b-41e1-4a7f-b568-b9d5fde682ff/message/send skills: order-extraction
+  - production-planning-agent        http://localhost:4000/v1/a2a/8e0f000a-ff4c-4047-8422-1491f908b467/message/send skills: production-scheduling
+
+🔎 Looking up an agent with skill 'order-fulfilment'...
+→ order-fulfilment-coordinator at http://localhost:4000/v1/a2a/bf9d0c9f-8998-4f7d-9b3a-116360f6bd5b/message/send
+
+👤 Request:
+Hello, this is Anna Berger from Alpine Robotics GmbH. We would like to order 50 hydraulic pump housings (material 149449), twelve flange couplings 252654 and 100 pieces of 255565. Our purchase order reference is 9938812 and our customer number is 90417. We need the complete delivery by 2026-10-30. Thanks!
+
+   [   0.0s] task state: submitted
+   [   0.5s] task state: working
+   [  75.8s] task state: completed
+
+--- Result from order-fulfilment-coordinator (task e4465199-8a1d-4349-9b0d-dcf84a14a745) ---
+Dear Anna Berger,
+
+Thank you for your order. Here is the confirmation for your order details:
+
+### Order Items
+* **Hydraulic pump housing (Material 149449):**
+  * **Ordered Quantity:** 50
+  * **Shipped from Stock:** 30 (Warehouse: Innsbruck)
+  * **Quantity Produced:** 20
+  * **Production Finish Date:** 2026-10-07
+
+* **Flange coupling DN65 (Material 252654):**
+  * **Ordered Quantity:** 12
+  * **Shipped from Stock:** 0 (Warehouse: Innsbruck)
+  * **Quantity Produced:** 12
+  * **Production Finish Date:** 2026-10-01
+
+* **Gearbox output shaft 40 mm (Material 255565):**
+  * **Ordered Quantity:** 100
+  * **Shipped from Stock:** 100 (Warehouse: Linz)
+  * **Quantity Produced:** 0
+  * **Production Finish Date:** N/A (Fully available in stock)
+
+---
+
+### Ignored Numbers
+* **9938812:** Ignored because it starts with 9 (customer order reference).
+* **90417:** Ignored because it starts with 9 (customer number).
+
+---
+
+### Delivery Schedule & Requested Date
+* **Expected Complete Delivery Date:** 2026-10-07
+* **Requested Delivery Date Status:** Your requested complete delivery date of **2026-10-30** **can be met**, as all production items will be finished by 2026-10-07.
+
+Client log written to logs/client_20260926_231458.log

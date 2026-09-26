@@ -1,0 +1,25 @@
+[project]
+name = "mci-a2a-order-network"
+version = "1.0.0"
+description = "Distributed A2A multi-agent order fulfilment network with a dynamic agent registry"
+requires-python = ">=3.11"
+dependencies = [
+    "fasta2a[pydantic-ai]>=2.0",
+    "pydantic-ai-slim[openai,google]>=2.0",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "httpx>=0.28",
+    "python-dotenv>=1.0",
+    "httpx2>=2.13",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["."]

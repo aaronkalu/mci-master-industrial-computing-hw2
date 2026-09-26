@@ -1,0 +1,24 @@
+model_list:
+  # Same model name as in the lecture samples, routed to the Gemini free tier.
+  - model_name: gpt-4o-mini
+    litellm_params:
+      model: gemini/gemini-3.5-flash
+      api_key: os.environ/GEMINI_API_KEY
+  # Fallbacks: the free tier allows ~20 requests/day per model, so exhausted models hand over to the next one.
+  - model_name: gemini-fallback-1
+    litellm_params:
+      model: gemini/gemini-3.7-flash
+      api_key: os.environ/GEMINI_API_KEY
+  - model_name: gemini-fallback-2
+    litellm_params:
+      model: gemini/gemini-flash-lite-latest
+      api_key: os.environ/GEMINI_API_KEY
+
+litellm_settings:
+  num_retries: 2
+  fallbacks: [{"gpt-4o-mini": ["gemini-fallback-1", "gemini-fallback-2"]}]
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  # Allow LiteLLM to call agents / MCP servers running on this machine (see Sample 6 comments).
+  user_url_allowed_hosts: ["host.docker.internal", "localhost", "127.0.0.1"]

@@ -1,0 +1,78 @@
+[orchestrator] 2026-09-26 23:14:57,677 [INFO] runtime: 'order-fulfilment-coordinator' registered at http://localhost:4000 (litellm) as http://host.docker.internal:8100
+[order-intake] 2026-09-26 23:14:57,678 [INFO] runtime: 'order-intake-agent' registered at http://localhost:4000 (litellm) as http://host.docker.internal:8101
+[production  ] 2026-09-26 23:14:57,678 [INFO] runtime: 'production-planning-agent' registered at http://localhost:4000 (litellm) as http://host.docker.internal:8103
+[inventory   ] 2026-09-26 23:14:57,678 [INFO] runtime: 'inventory-agent' registered at http://localhost:4000 (litellm) as http://host.docker.internal:8102
+[client      ] Registry http://localhost:4000 lists 4 agent(s):
+[client      ]   - inventory-agent                  http://localhost:4000/v1/a2a/5ad3f757-6d59-43f4-a01f-70059edeaf6e/message/send skills: stock-check
+[client      ]   - order-fulfilment-coordinator     http://localhost:4000/v1/a2a/bf9d0c9f-8998-4f7d-9b3a-116360f6bd5b/message/send skills: order-fulfilment
+[client      ]   - order-intake-agent               http://localhost:4000/v1/a2a/d6ce5b6b-41e1-4a7f-b568-b9d5fde682ff/message/send skills: order-extraction
+[client      ]   - production-planning-agent        http://localhost:4000/v1/a2a/8e0f000a-ff4c-4047-8422-1491f908b467/message/send skills: production-scheduling
+[client      ] 
+[client      ] 🔎 Looking up an agent with skill 'order-fulfilment'...
+[client      ] → order-fulfilment-coordinator at http://localhost:4000/v1/a2a/bf9d0c9f-8998-4f7d-9b3a-116360f6bd5b/message/send
+[client      ] 
+[client      ] 👤 Request:
+[client      ] Hello, this is Anna Berger from Alpine Robotics GmbH. We would like to order 50 hydraulic pump housings (material 149449), twelve flange couplings 252654 and 100 pieces of 255565. Our purchase order reference is 9938812 and our customer number is 90417. We need the complete delivery by 2026-10-30. Thanks!
+[client      ] 
+[client      ]    [   0.0s] task state: submitted
+[client      ]    [   0.5s] task state: working
+[orchestrator] 2026-09-26 23:14:59,966 [INFO] httpx2: HTTP Request: POST http://localhost:4000/chat/completions "HTTP/1.1 200 OK"
+[orchestrator] 2026-09-26 23:15:01,161 [INFO] httpx2: HTTP Request: POST http://localhost:4000/chat/completions "HTTP/1.1 200 OK"
+[orchestrator] 2026-09-26 23:15:01,206 [INFO] a2a: order-intake-agent task e9d462de -> submitted
+[orchestrator] 2026-09-26 23:15:01,720 [INFO] a2a: order-intake-agent task e9d462de -> working
+[order-intake] 2026-09-26 23:15:03,019 [INFO] httpx2: HTTP Request: POST http://localhost:4000/chat/completions "HTTP/1.1 200 OK"
+[order-intake] 2026-09-26 23:15:07,949 [INFO] httpx2: HTTP Request: POST http://localhost:4000/chat/completions "HTTP/1.1 200 OK"
+[orchestrator] 2026-09-26 23:15:08,434 [INFO] a2a: order-intake-agent task e9d462de -> completed
+[orchestrator] 2026-09-26 23:15:08,435 [INFO] orchestrator: Delegated 'order-extraction' to order-intake-agent (task e9d462de): Hello, this is Anna Berger from Alpine Robotics GmbH. We would like to order 50 hydraulic pump housings (material 149449), twelve flange couplings 252654 and 100 pieces of 255565. Our purchase order r
+[orchestrator] 2026-09-26 23:15:10,263 [INFO] httpx2: HTTP Request: POST http://localhost:4000/chat/completions "HTTP/1.1 200 OK"
+[orchestrator] 2026-09-26 23:15:10,444 [INFO] a2a: inventory-agent task fc428c60 -> submitted
+[orchestrator] 2026-09-26 23:15:10,962 [INFO] a2a: inventory-agent task fc428c60 -> working
+[inventory   ] 2026-09-26 23:15:12,586 [INFO] httpx2: HTTP Request: POST http://localhost:4000/chat/completions "HTTP/1.1 200 OK"
+[inventory   ] 2026-09-26 23:15:12,645 [INFO] a2a: production-planning-agent task 385a6ac4 -> submitted
+[inventory   ] 2026-09-26 23:15:13,162 [INFO] a2a: production-planning-agent task 385a6ac4 -> working
+[production  ] 2026-09-26 23:15:22,326 [WARNING] rate-limit: LLM endpoint returned 429, retrying in 43s (attempt 1/6)
+[production  ] 2026-09-26 23:16:07,457 [INFO] httpx2: HTTP Request: POST http://localhost:4000/chat/completions "HTTP/1.1 200 OK"
+[inventory   ] 2026-09-26 23:16:07,917 [INFO] a2a: production-planning-agent task 385a6ac4 -> completed
+[inventory   ] 2026-09-26 23:16:07,920 [INFO] inventory: Production plan received from production-planning-agent (task 385a6ac4)
+[orchestrator] 2026-09-26 23:16:08,448 [INFO] a2a: inventory-agent task fc428c60 -> completed
+[orchestrator] 2026-09-26 23:16:08,450 [INFO] orchestrator: Delegated 'stock-check' to inventory-agent (task fc428c60): [{"material_number": "149449", "quantity": 50}, {"material_number": "252654", "quantity": 12}, {"material_number": "255565", "quantity": 100}]
+[orchestrator] 2026-09-26 23:16:12,105 [INFO] httpx2: HTTP Request: POST http://localhost:4000/chat/completions "HTTP/1.1 200 OK"
+[client      ]    [  75.8s] task state: completed
+[client      ] 
+[client      ] --- Result from order-fulfilment-coordinator (task e4465199-8a1d-4349-9b0d-dcf84a14a745) ---
+[client      ] Dear Anna Berger,
+[client      ] 
+[client      ] Thank you for your order. Here is the confirmation for your order details:
+[client      ] 
+[client      ] ### Order Items
+[client      ] * **Hydraulic pump housing (Material 149449):**
+[client      ]   * **Ordered Quantity:** 50
+[client      ]   * **Shipped from Stock:** 30 (Warehouse: Innsbruck)
+[client      ]   * **Quantity Produced:** 20
+[client      ]   * **Production Finish Date:** 2026-10-07
+[client      ] 
+[client      ] * **Flange coupling DN65 (Material 252654):**
+[client      ]   * **Ordered Quantity:** 12
+[client      ]   * **Shipped from Stock:** 0 (Warehouse: Innsbruck)
+[client      ]   * **Quantity Produced:** 12
+[client      ]   * **Production Finish Date:** 2026-10-01
+[client      ] 
+[client      ] * **Gearbox output shaft 40 mm (Material 255565):**
+[client      ]   * **Ordered Quantity:** 100
+[client      ]   * **Shipped from Stock:** 100 (Warehouse: Linz)
+[client      ]   * **Quantity Produced:** 0
+[client      ]   * **Production Finish Date:** N/A (Fully available in stock)
+[client      ] 
+[client      ] ---
+[client      ] 
+[client      ] ### Ignored Numbers
+[client      ] * **9938812:** Ignored because it starts with 9 (customer order reference).
+[client      ] * **90417:** Ignored because it starts with 9 (customer number).
+[client      ] 
+[client      ] ---
+[client      ] 
+[client      ] ### Delivery Schedule & Requested Date
+[client      ] * **Expected Complete Delivery Date:** 2026-10-07
+[client      ] * **Requested Delivery Date Status:** Your requested complete delivery date of **2026-10-30** **can be met**, as all production items will be finished by 2026-10-07.
+[client      ] 
+[client      ] Client log written to logs/client_20260926_231458.log
